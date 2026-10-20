@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wiskunde: Hoeken bij Evenwijdigen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .shuffle-flash {
+            animation: flashEffect 0.5s ease-out;
+        }
+
+        @keyframes flashEffect {
+            0% { opacity: 0.3; transform: scale(0.99); }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- Header -->
+    <header class="bg-slate-900/95 backdrop-blur-md text-white shadow-md border-b border-slate-800 sticky top-0 z-50 transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-6 py-3.5 flex flex-col sm:flex-row justify-between items-center">
+            <!-- Logo / Title Section -->
+            <div class="flex items-center space-x-3 mb-3 sm:mb-0 group cursor-pointer">
+                <div class="bg-gradient-to-tr from-amber-500 to-orange-500 p-2 rounded-xl shadow-md shadow-orange-500/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">Wiskunde<span class="text-amber-500">Interactief</span></h1>
+                    <p class="text-[10px] text-slate-400 font-medium tracking-wider uppercase -mt-0.5">Secundair Onderwijs</p>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="flex space-x-1.5 bg-slate-800/60 p-1.5 rounded-xl border border-slate-700/40">
+                <button onclick="switchTab('theorie')" id="btn-theorie" class="tab-btn px-5 py-2 rounded-lg font-semibold text-xs uppercase tracking-wider transition-all duration-300 bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-orange-500/10">
+                    Theorie & Info
+                </button>
+                <button onclick="switchTab('oefenen')" id="btn-oefenen" class="tab-btn px-5 py-2 rounded-lg font-semibold text-xs uppercase tracking-wider transition-all duration-300 text-slate-300 hover:text-white hover:bg-slate-700/50">
+                    Oefenen & Quiz
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-6xl mx-auto px-4 py-8">
+
+        <!-- TAB 1: THEORIE -->
+        <section id="theorie" class="tab-content active space-y-8">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 transition-all duration-300 hover:shadow-md">
+                <h2 class="text-3xl font-bold text-slate-900 mb-2">4. Hoeken bij twee evenwijdigen en een snijlijn</h2>
+                <p class="text-slate-600">Ontdek de terminologie, eigenschappen en omgekeerde eigenschappen wanneer twee evenwijdige rechten gesneden worden door een derde rechte.</p>
+            </div>
+
+            <!-- Visuele Interactieve Figuur -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between transition-all duration-300 hover:shadow-md space-y-4">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3 text-slate-900 flex items-center">
+                            <span class="bg-amber-100 text-amber-700 w-7 h-7 rounded-full inline-flex items-center justify-center text-sm font-bold mr-2">1</span>
+                            Interactieve Meetkunde
+                        </h3>
+                        <p class="text-xs text-slate-600 mb-4">
+                            Sleep de regelaar om te draaien. Gebruik de knoppen hieronder om specifieke hoekparen of losse hoeknummers op het bord te isoleren!
+                        </p>
+                        
+                        <!-- LIVE GRADEN DISPLAY VOOR GESELECTEERDE HOEKEN -->
+                        <div class="space-y-2 bg-slate-900 text-white p-4 rounded-xl shadow-inner text-sm font-semibold">
+                            <span class="block text-[10px] text-amber-400 font-bold uppercase tracking-wider mb-1">Waarde actieve hoek(en):</span>
+                            <div class="flex justify-between items-center border-b border-slate-800 pb-1.5">
+                                <span class="text-slate-300 font-medium" id="lbl-angle-p">Hoekpunt P:</span>
+                                <span id="live-p-val" class="font-mono text-amber-400 font-bold bg-slate-800/80 px-2 py-0.5 rounded">60°</span>
+                            </div>
+                            <div class="flex justify-between items-center pt-0.5">
+                                <span class="text-slate-300 font-medium" id="lbl-angle-q">Hoekpunt Q:</span>
+                                <span id="live-q-val" class="font-mono text-orange-400 font-bold bg-slate-800/80 px-2 py-0.5 rounded">60°</span>
+                            </div>
+                        </div>
+
+                        <!-- STAP 1 HOOFDKEUZE -->
+                        <div class="mt-4 pt-3 border-t border-slate-100 space-y-2">
+                            <span class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Stap 1: Kies Hoofdcategorie</span>
+                            <div class="grid grid-cols-1 gap-1.5">
+                                <button onclick="selectMainCategory('overeenkomstig')" id="cat-overeenkomstig" class="cat-btn text-left px-3 py-2 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 border border-transparent hover:bg-slate-200 transition-all">Overeenkomstige hoeken</button>
+                                <button onclick="selectMainCategory('binnen')" id="cat-binnen" class="cat-btn text-left px-3 py-2 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 border border-transparent hover:bg-slate-200 transition-all">Binnenhoeken</button>
+                                <button onclick="selectMainCategory('buiten')" id="cat-buiten" class="cat-btn text-left px-3 py-2 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 border border-transparent hover:bg-slate-200 transition-all">Buitenhoeken</button>
+                            </div>
+                        </div>
+
+                        <!-- STAP 2 SUBKEUZE -->
+                        <div id="sub-category-box" class="mt-4 pt-3 border-t border-slate-100 space-y-2 hidden">
+                            <span class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Stap 2: Kies Positie</span>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="selectSubCategory('verwisselend')" id="sub-verwisselend" class="sub-btn text-center px-2 py-2 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">Verwisselend</button>
+                                <button onclick="selectSubCategory('zelfde_kant')" id="sub-zelfde_kant" class="sub-btn text-center px-2 py-2 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">Zelfde kant</button>
+                            </div>
+                        </div>
+
+                        <!-- NUMMER SELECTOR ONDER STAP 2 -->
+                        <div class="mt-4 pt-3 border-t border-slate-100 space-y-2">
+                            <span class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Filter op specifiek hoeknummer</span>
+                            <div class="flex items-center space-x-1.5">
+                                <button onclick="selectAngleNumber(0)" id="num-btn-0" class="num-btn flex-1 py-1.5 rounded-lg text-xs font-bold transition-all bg-orange-600 text-white shadow-sm">Alles</button>
+                                <button onclick="selectAngleNumber(1)" id="num-btn-1" class="num-btn flex-1 py-1.5 rounded-lg text-xs font-bold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">1</button>
+                                <button onclick="selectAngleNumber(2)" id="num-btn-2" class="num-btn flex-1 py-1.5 rounded-lg text-xs font-bold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">2</button>
+                                <button onclick="selectAngleNumber(3)" id="num-btn-3" class="num-btn flex-1 py-1.5 rounded-lg text-xs font-bold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">3</button>
+                                <button onclick="selectAngleNumber(4)" id="num-btn-4" class="num-btn flex-1 py-1.5 rounded-lg text-xs font-bold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">4</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-100">
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Draai de snijlijn:</label>
+                        <input type="range" id="angle-slider" min="35" max="145" value="60" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-orange-500">
+                    </div>
+                </div>
+
+                <!-- Canvas Visualisatie -->
+                <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center min-h-[340px] transition-all duration-300 hover:shadow-md">
+                    <canvas id="geometry-canvas" class="w-full max-w-lg border border-dashed border-slate-200 rounded-xl bg-slate-50/50"></canvas>
+                </div>
+            </div>
+
+            <!-- Terminologie Kaarten -->
+            <div class="space-y-4">
+                <h3 class="text-2xl font-bold text-slate-900">4.1 Terminologie & Relaties</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Overeenkomstige hoeken -->
+                    <div class="bg-white p-5 rounded-xl border-l-4 border-amber-500 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                        <h4 class="font-bold text-lg text-slate-900 mb-2">Overeenkomstige hoeken</h4>
+                        <p class="text-sm text-slate-600 mb-3">Hoeken die op dezelfde relatieve positie liggen bij elk kruispunt.</p>
+                        <div class="flex flex-wrap gap-1.5 text-xs font-mono">
+                            <span class="bg-slate-100 px-2 py-1 rounded">P₁ en Q₃</span>
+                            <span class="bg-slate-100 px-2 py-1 rounded">P₂ en Q₄</span>
+                            <span class="bg-slate-100 px-2 py-1 rounded">P₃ en Q₁</span>
+                            <span class="bg-slate-100 px-2 py-1 rounded">P₄ en Q₂</span>
+                        </div>
+                    </div>
+
+                    <!-- Binnenhoeken -->
+                    <div class="bg-white p-5 rounded-xl border-l-4 border-blue-500 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                        <h4 class="font-bold text-lg text-slate-900 mb-2">Binnenhoeken</h4>
+                        <p class="text-sm text-slate-600 mb-2"><span class="font-semibold text-blue-700">Verwisselend:</span> Liggen tussen de rechten, aan weerszijden van de snijlijn.</p>
+                        <div class="flex gap-1.5 text-xs font-mono mb-3">
+                            <span class="bg-blue-50 text-blue-700 px-2 py-1 rounded">P₂ en Q₂</span>
+                            <span class="bg-blue-50 text-blue-700 px-2 py-1 rounded">P₃ en Q₃</span>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2"><span class="font-semibold text-teal-700">Zelfde kant snijlijn:</span> Tussen de rechten, aan dezelfde kant.</p>
+                        <div class="flex gap-1.5 text-xs font-mono">
+                            <span class="bg-teal-50 text-teal-700 px-2 py-1 rounded">P₂ en Q₃</span>
+                            <span class="bg-teal-50 text-teal-700 px-2 py-1 rounded">P₃ en Q₂</span>
+                        </div>
+                    </div>
+
+                    <!-- Buitenhoeken -->
+                    <div class="bg-white p-5 rounded-xl border-l-4 border-indigo-500 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                        <h4 class="font-bold text-lg text-slate-900 mb-2">Buitenhoeken</h4>
+                        <p class="text-sm text-slate-600 mb-2"><span class="font-semibold text-indigo-700">Verwisselend:</span> Aan de buitenkant, aan weerszijden van de snijlijn.</p>
+                        <div class="flex gap-1.5 text-xs font-mono mb-3">
+                            <span class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded">P₁ en Q₁</span>
+                            <span class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded">P₄ en Q₄</span>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2"><span class="font-semibold text-purple-700">Zelfde kant snijlijn:</span> Aan de buitenkant, aan dezelfde kant.</p>
+                        <div class="flex gap-1.5 text-xs font-mono">
+                            <span class="bg-purple-50 text-purple-700 px-2 py-1 rounded">P₁ en Q₄</span>
+                            <span class="bg-purple-50 text-purple-700 px-2 py-1 rounded">P₄ en Q₁</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eigenschappen & Omgekeerde Eigenschappen -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4 transition-all duration-300 hover:shadow-md">
+                    <div class="flex items-center space-x-2">
+                        <div class="p-2 bg-emerald-100 text-emerald-700 rounded-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">4.3 Eigenschappen (a ∥ b)</h3>
+                    </div>
+                    <p class="text-sm text-slate-600">Als twee rechten <span class="font-semibold">evenwijdig</span> zijn, dan geldt:</p>
+                    <ul class="space-y-2.5 text-sm">
+                        <li class="flex items-start"><span class="text-emerald-500 mr-2">✓</span> Overeenkomstige hoeken zijn <span class="font-semibold text-slate-900">even groot</span>.</li>
+                        <li class="flex items-start"><span class="text-emerald-500 mr-2">✓</span> Verwisselende binnenhoeken zijn <span class="font-semibold text-slate-900">even groot</span>.</li>
+                        <li class="flex items-start"><span class="text-emerald-500 mr-2">✓</span> Verwisselende buitenhoeken zijn <span class="font-semibold text-slate-900">even groot</span>.</li>
+                        <li class="flex items-start"><span class="text-emerald-500 mr-2">✓</span> Binnenhoeken aan dezelfde kant zijn <span class="font-semibold text-emerald-700 bg-emerald-50 px-1 rounded">supplementair (som = 180°)</span>.</li>
+                        <li class="flex items-start"><span class="text-emerald-500 mr-2">✓</span> Buitenhoeken aan dezelfde kant zijn <span class="font-semibold text-emerald-700 bg-emerald-50 px-1 rounded">supplementair (som = 180°)</span>.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4 transition-all duration-300 hover:shadow-md">
+                    <div class="flex items-center space-x-2">
+                        <div class="p-2 bg-blue-100 text-blue-700 rounded-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">4.4 Omgekeerde Eigenschappen</h3>
+                    </div>
+                    <p class="text-sm text-slate-600">Om aan te tonen dat twee rechten <span class="font-semibold">evenwijdig</span> zijn, moet je bewijzen dat:</p>
+                    <ul class="space-y-2.5 text-sm">
+                        <li class="flex items-start"><span class="text-blue-500 mr-2">→</span> Één paar overeenkomstige hoeken <span class="font-semibold">even groot</span> zijn.</li>
+                        <li class="flex items-start"><span class="text-blue-500 mr-2">→</span> Één paar verwisselende binnen- of buitenhoeken <span class="font-semibold">even groot</span> zijn.</li>
+                        <li class="flex items-start"><span class="text-blue-500 mr-2">→</span> Één paar binnenhoeken aan dezelfde kant <span class="font-semibold text-blue-700 bg-blue-50 px-1 rounded">supplementair (180°)</span> zijn.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: OEFENEN -->
+        <section id="oefenen" class="tab-content space-y-8">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-all duration-300 hover:shadow-md">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-900 mb-2">Dynamische Oefeningen</h2>
+                    <p class="text-slate-600">Druk op de shuffle-knop om nieuwe getallen te genereren voor oneindig veel oefenplezier!</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="shuffleQuestions()" class="bg-orange-600 hover:bg-orange-700 active:scale-95 text-white font-medium px-5 py-2.5 rounded-xl transition-all duration-200 shadow-sm text-sm flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.253 8H18"></path></svg>
+                        <span>Volgende opgaven (Shuffle)</span>
+                    </button>
+                    <div class="bg-orange-50 text-orange-700 border border-orange-200 px-4 py-2.5 rounded-xl text-sm font-semibold">
+                        Score: <span id="score-display" class="font-mono text-base">0</span>/3
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Vragen Containers -->
+            <div id="quiz-container-box" class="space-y-8">
+                <!-- Vraag 1 -->
+                <div class="quiz-card bg-white p-6 rounded-2xl shadow-sm border border-slate-100 grid grid-cols-1 md:grid-cols-3 gap-6 transition-all duration-300 hover:shadow-md">
+                    <div class="md:col-span-2 space-y-4">
+                        <span class="inline-block text-xs font-bold uppercase tracking-wider bg-orange-100 text-orange-700 px-2.5 py-1 rounded-full">Vraag 1: Binnenhoeken</span>
+                        <h3 id="q1-text" class="text-lg font-medium text-slate-900">...</h3>
+                        
+                        <div id="q1-options" class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                            <!-- Knoppen dynamisch geladen -->
+                        </div>
+                        <p id="feedback-1" class="text-sm font-medium hidden"></p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/60 flex items-center justify-center">
+                        <div id="q1-svg" class="w-full max-w-[200px]"></div>
+                    </div>
+                </div>
+
+                <!-- Vraag 2 -->
+                <div class="quiz-card bg-white p-6 rounded-2xl shadow-sm border border-slate-100 grid grid-cols-1 md:grid-cols-3 gap-6 transition-all duration-300 hover:shadow-md">
+                    <div class="md:col-span-2 space-y-4">
+                        <span class="inline-block text-xs font-bold uppercase tracking-wider bg-orange-100 text-orange-700 px-2.5 py-1 rounded-full">Vraag 2: Verwisselende hoeken</span>
+                        <h3 id="q2-text" class="text-lg font-medium text-slate-900">...</h3>
+                        
+                        <div id="q2-options" class="grid grid-cols-1 gap-3 pt-2">
+                            <!-- Knoppen dynamisch geladen -->
+                        </div>
+                        <p id="feedback-2" class="text-sm font-medium hidden"></p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/60 flex items-center justify-center">
+                        <div id="q2-svg" class="w-full max-w-[200px]"></div>
+                    </div>
+                </div>
+
+                <!-- Vraag 3 -->
+                <div class="quiz-card bg-white p-6 rounded-2xl shadow-sm border border-slate-100 grid grid-cols-1 md:grid-cols-3 gap-6 transition-all duration-300 hover:shadow-md">
+                    <div class="md:col-span-2 space-y-4">
+                        <span class="inline-block text-xs font-bold uppercase tracking-wider bg-orange-100 text-orange-700 px-2.5 py-1 rounded-full">Vraag 3: Omgekeerde eigenschap</span>
+                        <h3 id="q3-text" class="text-lg font-medium text-slate-900">...</h3>
+                        
+                        <div id="q3-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                            <!-- Knoppen dynamisch geladen -->
+                        </div>
+                        <p id="feedback-3" class="text-sm font-medium hidden"></p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/60 flex items-center justify-center">
+                        <div id="q3-svg" class="w-full max-w-[200px]"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 mt-12 border-t border-slate-800 text-center text-sm">
+        <p>© 2026 WiskundeInteractief — Gemaakt voor meetkundeonderwijs.</p>
+    </footer>
+
+    <!-- JavaScript voor dynamische interactie en Canvas -->
+    <script>
+        // Selectie state voor live highlights
+        let activeMainCat = 'overeenkomstig';
+        let activeSubCat = '';
+        let selectedAngleNum = 0; // 0 betekent 'toon alle nummers'
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = 'tab-btn px-5 py-2 rounded-lg font-semibold text-xs uppercase tracking-wider transition-all duration-300 text-slate-300 hover:text-white hover:bg-slate-700/50';
+            });
+            
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            activeBtn.className = 'tab-btn px-5 py-2 rounded-lg font-semibold text-xs uppercase tracking-wider transition-all duration-300 bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-orange-500/10';
+
+            if(tabId === 'theorie') {
+                drawGeometry();
+            }
+        }
+
+        function selectMainCategory(cat) {
+            activeMainCat = cat;
+            activeSubCat = ''; 
+            
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.className = 'cat-btn text-left px-3 py-2 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 border border-transparent hover:bg-slate-200 transition-all';
+            });
+            document.getElementById(`cat-${cat}`).className = 'cat-btn text-left px-3 py-2 rounded-lg text-xs font-semibold bg-orange-500 text-white border border-orange-600 transition-all shadow-sm';
+
+            const subBox = document.getElementById('sub-category-box');
+            if (cat === 'overeenkomstig') {
+                subBox.classList.add('hidden');
+            } else {
+                subBox.classList.remove('hidden');
+                document.querySelectorAll('.sub-btn').forEach(btn => {
+                    btn.className = 'sub-btn text-center px-2 py-2 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all';
+                });
+            }
+            drawGeometry();
+        }
+
+        function selectSubCategory(sub) {
+            activeSubCat = sub;
+            
+            document.querySelectorAll('.sub-btn').forEach(btn => {
+                btn.className = 'sub-btn text-center px-2 py-2 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all';
+            });
+            document.getElementById(`sub-${sub}`).className = 'sub-btn text-center px-2 py-2 rounded-lg text-xs font-semibold bg-amber-500 text-white border border-amber-600 transition-all shadow-sm';
+            
+            drawGeometry();
+        }
+
+        // Hoeknummer isoleren selector
+        function selectAngleNumber(num) {
+            selectedAngleNum = num;
+            
+            document.querySelectorAll('.num-btn').forEach(btn => {
+                btn.className = 'num-btn flex-1 py-1.5 rounded-lg text-xs font-bold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200';
+            });
+            
+            const activeBtn = document.getElementById(`num-btn-${num}`);
+            if (num === 0) {
+                activeBtn.className = 'num-btn flex-1 py-1.5 rounded-lg text-xs font-bold transition-all bg-orange-600 text-white shadow-sm';
+            } else {
+                activeBtn.className = 'num-btn flex-1 py-1.5 rounded-lg text-xs font-bold transition-all bg-amber-500 text-white shadow-sm border border-amber-600';
+            }
+            
+            drawGeometry();
+        }
+
+        // --- THEORIE INTERACTIEF CANVAS ---
+        const canvas = document.getElementById('geometry-canvas');
+        const ctx = canvas.getContext('2d');
+        const slider = document.getElementById('angle-slider');
+
+        function resizeCanvas() {
+            if (!canvas) return;
+            const containerWidth = canvas.parentElement.clientWidth;
+            canvas.width = Math.min(containerWidth, 500);
+            canvas.height = 340;
+            drawGeometry();
+        }
+
+        window.addEventListener('load', () => {
+            resizeCanvas();
+            shuffleQuestions();
+            selectMainCategory('overeenkomstig');
+        });
+        window.addEventListener('resize', resizeCanvas);
+        slider.addEventListener('input', () => {
+            drawGeometry();
+        });
+
+        function drawAngleArc(x, y, radius, startRad, endRad, color) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.arc(x, y, radius, startRad, endRad, true);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function drawGeometry() {
+            if (!canvas || !ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const w = canvas.width;
+            const h = canvas.height;
+            const angleDeg = parseInt(slider.value);
+            const subAngleDeg = 180 - angleDeg;
+            
+            const angleRad = (angleDeg * Math.PI) / 180;
+            const subAngleRad = (subAngleDeg * Math.PI) / 180;
+
+            ctx.lineWidth = 3;
+            
+            // Rechter a en b
+            const yA = h * 0.3;
+            const yB = h * 0.7;
+            ctx.strokeStyle = '#334155';
+            ctx.beginPath(); ctx.moveTo(40, yA); ctx.lineTo(w - 40, yA); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(40, yB); ctx.lineTo(w - 40, yB); ctx.stroke();
+
+            // Snijlijn c
+            const centerX = w / 2;
+            const centerY = h / 2;
+            const lineLength = 240;
+            const dx = Math.cos(angleRad) * (lineLength / 2);
+            const dy = Math.sin(angleRad) * (lineLength / 2);
+            
+            ctx.strokeStyle = '#ea580c';
+            ctx.beginPath(); ctx.moveTo(centerX + dx, centerY - dy); ctx.lineTo(centerX - dx, centerY + dy); ctx.stroke();
+
+            const slope = -dy / dx;
+            const pX = centerX + (yA - centerY) / slope;
+            const qX = centerX + (yB - centerY) / slope;
+
+            // Bepaal welke hoeken en graden we tonen op basis van de filters of nummerselector
+            let pShowValue = angleDeg;
+            let qShowValue = angleDeg;
+            let pLabelText = "Hoekpunt P:";
+            let qLabelText = "Hoekpunt Q:";
+
+            const colorHighlight = 'rgba(245, 158, 11, 0.45)';
+            const r = 24;
+
+            if (selectedAngleNum === 0) {
+                // VOLG DE RELATIEFILTERS (STAP 1 & STAP 2)
+                if (activeMainCat === 'overeenkomstig') {
+                    pLabelText = "Hoek P₁:"; qLabelText = "Hoek Q₃:";
+                    pShowValue = angleDeg; qShowValue = angleDeg;
+                    drawAngleArc(pX, yA, r, 0, -angleRad, colorHighlight);
+                    drawAngleArc(qX, yB, r, 0, -angleRad, colorHighlight);
+                } else if (activeMainCat === 'binnen') {
+                    if (activeSubCat === 'verwisselend') {
+                        pLabelText = "Hoek P₂:"; qLabelText = "Hoek Q₂:";
+                        pShowValue = subAngleDeg; qShowValue = subAngleDeg;
+                        drawAngleArc(pX, yA, r, Math.PI, -angleRad, colorHighlight);
+                        drawAngleArc(qX, yB, r, 0, Math.PI - angleRad, colorHighlight);
+                    } else if (activeSubCat === 'zelfde_kant') {
+                        pLabelText = "Hoek P₂:"; qLabelText = "Hoek Q₃:";
+                        pShowValue = subAngleDeg; qShowValue = angleDeg;
+                        drawAngleArc(pX, yA, r, Math.PI, -angleRad, colorHighlight);
+                        drawAngleArc(qX, yB, r, 0, -angleRad, colorHighlight);
+                    }
+                } else if (activeMainCat === 'buiten') {
+                    if (activeSubCat === 'verwisselend') {
+                        pLabelText = "Hoek P₁:"; qLabelText = "Hoek Q₁:";
+                        pShowValue = angleDeg; qShowValue = angleDeg;
+                        drawAngleArc(pX, yA, r, 0, -angleRad, colorHighlight);
+                        drawAngleArc(qX, yB, r, Math.PI, Math.PI - angleRad, colorHighlight);
+                    } else if (activeSubCat === 'zelfde_kant') {
+                        pLabelText = "Hoek P₁:"; qLabelText = "Hoek Q₄:";
+                        pShowValue = angleDeg; qShowValue = subAngleDeg;
+                        drawAngleArc(pX, yA, r, 0, -angleRad, colorHighlight);
+                        drawAngleArc(qX, yB, r, Math.PI - angleRad, 0, colorHighlight);
+                    }
+                }
+            } else {
+                // NUMMER SELECTOR MODUS OVERRIDES DE CATEGORIEFILTERS
+                pLabelText = `Hoek P${['₀','₁','₂','₃','₄'][selectedAngleNum]}:`;
+                
+                // Koppel de juiste Q-partner conform de PDF handboek definities: P1-Q3, P2-Q4, P3-Q1, P4-Q2
+                const qPartnerMap = { 1: 3, 2: 4, 3: 1, 4: 2 };
+                const qPartnerNum = qPartnerMap[selectedAngleNum];
+                qLabelText = `Hoek Q${['₀','₁','₂','₃','₄'][qPartnerNum]}:`;
+
+                // Bereken exacte graden per specifiek quadrant (Top-Right = angleDeg)
+                if (selectedAngleNum === 1) {
+                    pShowValue = angleDeg; qShowValue = angleDeg; // Q3 is ook Top-Right
+                    drawAngleArc(pX, yA, r, 0, -angleRad, colorHighlight);
+                    drawAngleArc(qX, yB, r, 0, -angleRad, colorHighlight);
+                } else if (selectedAngleNum === 2) {
+                    pShowValue = subAngleDeg; qShowValue = subAngleDeg; // Q4 is Bottom-Left
+                    drawAngleArc(pX, yA, r, Math.PI, Math.PI - angleRad, colorHighlight);
+                    drawAngleArc(qX, yB, r, Math.PI, -angleRad, colorHighlight);
+                } else if (selectedAngleNum === 3) {
+                    pShowValue = subAngleDeg; qShowValue = subAngleDeg; // Q1 is Bottom-Right
+                    drawAngleArc(pX, yA, r, -angleRad, Math.PI, colorHighlight);
+                    drawAngleArc(qX, yB, r, Math.PI - angleRad, 0, colorHighlight);
+                } else if (selectedAngleNum === 4) {
+                    pShowValue = angleDeg; qShowValue = angleDeg; // Q2 is Top-Left
+                    drawAngleArc(pX, yA, r, Math.PI - angleRad, Math.PI, colorHighlight);
+                    drawAngleArc(qX, yB, r, 0, Math.PI - angleRad, colorHighlight);
+                }
+            }
+
+            // Update live tekstvelden buiten het canvas
+            document.getElementById('lbl-angle-p').innerText = pLabelText;
+            document.getElementById('lbl-angle-q').innerText = qLabelText;
+            document.getElementById('live-p-val').innerText = `${pShowValue}°`;
+            document.getElementById('live-q-val').innerText = `${qShowValue}°`;
+
+            // Labels Rechten
+            ctx.font = 'bold 14px Poppins';
+            ctx.fillStyle = '#475569';
+            ctx.fillText('a', 45, yA - 10);
+            ctx.fillText('b', 45, yB - 10);
+            ctx.fillStyle = '#ea580c';
+            ctx.fillText('c', centerX + dx - 15, centerY - dy + 20);
+
+            ctx.fillStyle = '#0f172a';
+            ctx.fillText('P', pX - 18, yA - 10);
+            ctx.fillText('Q', qX - 18, yB - 10);
+
+            // Cijfers hoeken printen (Alleen tonen wat gefilterd is)
+            ctx.font = '12px sans-serif';
+            ctx.fillStyle = '#475569';
+            
+            // Teken hoeknummers bij P
+            if (selectedAngleNum === 0 || selectedAngleNum === 1) ctx.fillText('1', pX + 12, yA - 8);
+            if (selectedAngleNum === 0 || selectedAngleNum === 2) ctx.fillText('2', pX - 18, yA + 16);
+            if (selectedAngleNum === 0 || selectedAngleNum === 3) ctx.fillText('3', pX + 12, yA + 16);
+            if (selectedAngleNum === 0 || selectedAngleNum === 4) ctx.fillText('4', pX - 18, yA - 8);
+
+            // Teken hoeknummers bij Q conform handboek (1=bdr, 2=tl, 3=tr, 4=bl)
+            if (selectedAngleNum === 0 || selectedAngleNum === 3) ctx.fillText('1', qX + 12, yB + 16);
+            if (selectedAngleNum === 0 || selectedAngleNum === 4) ctx.fillText('2', qX - 18, yB - 8);
+            if (selectedAngleNum === 0 || selectedAngleNum === 1) ctx.fillText('3', qX + 12, yB - 8);
+            if (selectedAngleNum === 0 || selectedAngleNum === 2) ctx.fillText('4', qX - 18, yB + 16);
+        }
+
+        // --- SHUFFLE & QUIZ LOGICA ---
+        let currentAnswers = { 1: '', 2: '', 3: '' };
+        let quizScores = { 1: 0, 2: 0, 3: 0 };
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function getRandomLetter(exclude = []) {
+            const alphabet = 'KLMNDEFGH';
+            let available = alphabet.split('').filter(l => !exclude.includes(l));
+            return available[Math.floor(Math.random() * available.length)];
+        }
+
+        function generateQuestionSVG(angleDeg, highlightType) {
+            const angleRad = (angleDeg * Math.PI) / 180;
+            const slope = -Math.sin(angleRad) / Math.cos(angleRad);
+            
+            let svg = `<svg viewBox="0 0 100 100" class="w-full h-full">`;
+            svg += `<line x1="10" y1="30" x2="90" y2="30" stroke="#475569" stroke-width="2"/>`;
+            svg += `<line x1="10" y1="70" x2="90" y2="70" stroke="#475569" stroke-width="2"/>`;
+            
+            const dx = Math.cos(angleRad) * 40;
+            const dy = Math.sin(angleRad) * 40;
+            svg += `<line x1="${50+dx}" y1="${50-dy}" x2="${50-dx}" y2="${50+dy}" stroke="#ea580c" stroke-width="2"/>`;
+            
+            const pX = 50 + (30 - 50) / slope;
+            const qX = 50 + (70 - 50) / slope;
+
+            if (highlightType === 'binnenhoeken_zelfde_kant') {
+                svg += `<circle cx="${pX - 5}" cy="35" r="4" fill="#ef4444" opacity="0.7"><animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/></circle>`;
+                svg += `<circle cx="${qX + 5}" cy="65" r="4" fill="#3b82f6" opacity="0.7"><animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/></circle>`;
+            } else if (highlightType === 'verwisselend_buiten') {
+                svg += `<circle cx="${pX + 6}" cy="25" r="4" fill="#ef4444" opacity="0.7"><animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/></circle>`;
+                svg += `<circle cx="${qX - 6}" cy="75" r="4" fill="#ef4444" opacity="0.7"><animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/></circle>`;
+            } else if (highlightType === 'omgekeerde') {
+                svg += `<circle cx="${pX + 6}" cy="25" r="4" fill="#10b981" opacity="0.7"><animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/></circle>`;
+                svg += `<circle cx="${qX + 6}" cy="65" r="4" fill="#10b981" opacity="0.7"><animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/></circle>`;
+            }
+
+            svg += `</svg>`;
+            return svg;
+        }
+
+        function shuffleQuestions() {
+            quizScores = { 1: 0, 2: 0, 3: 0 };
+            document.getElementById('score-display').innerText = 0;
+            
+            const cards = document.querySelectorAll('.quiz-card');
+            cards.forEach(card => {
+                card.classList.remove('shuffle-flash');
+                void card.offsetWidth;
+                card.classList.add('shuffle-flash');
+            });
+
+            for(let i=1; i<=3; i++) {
+                document.getElementById(`feedback-${i}`).classList.add('hidden');
+            }
+
+            // --- VRAAG 1 ---
+            const r1_k = getRandomLetter();
+            const r1_m = getRandomLetter([r1_k]);
+            const hoek1 = getRandomInt(45, 75);
+            const correct1 = 180 - hoek1;
+            currentAnswers[1] = correct1.toString();
+
+            document.getElementById('q1-text').innerHTML = `Als de rechten <span class="font-semibold">${r1_k}</span> en <span class="font-semibold">${r1_m}</span> evenwijdig zijn, en een binnenhoek aan de linkerkant van de snijlijn bedraagt <span class="text-orange-600 font-bold">${hoek1}°</span>, hoe groot is dan de andere binnenhoek aan dezelfde kant van de snijlijn?`;
+            
+            const opt1_wrong1 = correct1 - getRandomInt(5, 15);
+            const opt1_wrong2 = hoek1;
+            const options1 = [correct1.toString(), opt1_wrong1.toString(), opt1_wrong2.toString()].sort(() => Math.random() - 0.5);
+            
+            let q1OptionsDiv = document.getElementById('q1-options');
+            q1OptionsDiv.innerHTML = '';
+            options1.forEach(opt => {
+                q1OptionsDiv.innerHTML += `<button onclick="verifyQuizAnswer(1, '${opt}', this)" class="q-btn-1 border-2 border-slate-200 text-left p-3.5 rounded-xl hover:bg-slate-50 active:scale-98 transition-all duration-200 text-sm font-medium">${opt}°</button>`;
+            });
+            document.getElementById('q1-svg').innerHTML = generateQuestionSVG(hoek1, 'binnenhoeken_zelfde_kant');
+
+            // --- VRAAG 2 ---
+            const hoek2 = getRandomInt(105, 135);
+            currentAnswers[2] = 'A';
+
+            document.getElementById('q2-text').innerHTML = `Gegeven zijn twee verwisselende buitenhoeken bij twee evenwijdige lijnen. Als de ene buitenhoek <span class="text-orange-600 font-bold">${hoek2}°</span> is, wat is dan de waarde van de andere verwisselende buitenhoek?`;
+            
+            let q2OptionsDiv = document.getElementById('q2-options');
+            q2OptionsDiv.innerHTML = `
+                <button onclick="verifyQuizAnswer(2, 'A', this)" class="q-btn-2 border-2 border-slate-200 text-left p-3.5 rounded-xl hover:bg-slate-50 active:scale-98 transition-all duration-200 text-sm font-medium">A) Exact ${hoek2}°, want verwisselende buitenhoeken bij evenwijdigen zijn even groot.</button>
+                <button onclick="verifyQuizAnswer(2, 'B', this)" class="q-btn-2 border-2 border-slate-200 text-left p-3.5 rounded-xl hover:bg-slate-50 active:scale-98 transition-all duration-200 text-sm font-medium">B) ${180 - hoek2}°, omdat ze samen altijd supplementair moeten zijn.</button>
+                <button onclick="verifyQuizAnswer(2, 'C', this)" class="q-btn-2 border-2 border-slate-200 text-left p-3.5 rounded-xl hover:bg-slate-50 active:scale-98 transition-all duration-200 text-sm font-medium">C) Dit hangt af van hoe schuin de snijlijn staat.</button>
+            `;
+            document.getElementById('q2-svg').innerHTML = generateQuestionSVG(hoek2, 'verwisselend_buiten');
+
+            // --- VRAAG 3 ---
+            const hoek3_A = getRandomInt(55, 125);
+            const isParallel = Math.random() > 0.5;
+            const hoek3_B = isParallel ? hoek3_A : hoek3_A + getRandomInt(5, 15);
+            currentAnswers[3] = isParallel ? 'A' : 'B';
+
+            document.getElementById('q3-text').innerHTML = `Je meet twee <strong>overeenkomstige hoeken</strong> bij twee onbekende rechten. De eerste hoek meet <span class="text-orange-600 font-bold">${hoek3_A}°</span> en de tweede meet <span class="text-orange-600 font-bold">${hoek3_B}°</span>. Wat kun je besluiten over deze rechten?`;
+            
+            let q3OptionsDiv = document.getElementById('q3-options');
+            q3OptionsDiv.innerHTML = `
+                <button onclick="verifyQuizAnswer(3, 'A', this)" class="q-btn-3 border-2 border-slate-200 text-left p-3.5 rounded-xl hover:bg-slate-50 active:scale-98 transition-all duration-200 text-sm font-medium">A) De rechten zijn gegarandeerd evenwijdig.</button>
+                <button onclick="verifyQuizAnswer(3, 'B', this)" class="q-btn-3 border-2 border-slate-200 text-left p-3.5 rounded-xl hover:bg-slate-50 active:scale-98 transition-all duration-200 text-sm font-medium">B) De rechten zijn niet evenwijdig (ze snijden elkaar ergens).</button>
+            `;
+            document.getElementById('q3-svg').innerHTML = generateQuestionSVG(hoek3_A, 'omgekeerde');
+        }
+
+        function verifyQuizAnswer(qNum, selected, btnElement) {
+            const correct = currentAnswers[qNum];
+            const feedback = document.getElementById(`feedback-${qNum}`);
+            
+            document.querySelectorAll(`.q-btn-${qNum}`).forEach(btn => {
+                btn.disabled = true;
+                btn.classList.remove('hover:bg-slate-50');
+            });
+
+            if (selected === correct) {
+                btnElement.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-700');
+                feedback.innerText = "Correct! Uitstekend toegepast.";
+                feedback.className = "text-sm font-medium text-emerald-600 mt-2 block animate-fade-in";
+                quizScores[qNum] = 1;
+            } else {
+                btnElement.classList.add('bg-rose-50', 'border-rose-500', 'text-rose-700');
+                feedback.innerText = `Niet juist. Het juiste antwoord was: ${correct}${qNum === 1 ? '°' : ''}.`;
+                feedback.className = "text-sm font-medium text-rose-600 mt-2 block animate-fade-in";
+                quizScores[qNum] = 0;
+            }
+
+            const totalScore = quizScores[1] + quizScores[2] + quizScores[3];
+            document.getElementById('score-display').innerText = totalScore;
+        }
+    </script>
+</body>
+</html>
